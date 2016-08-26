@@ -36,21 +36,6 @@ capitalizeWords s = map (\x -> (x,capitalizeWord x)) $ words s
 capitalizeParagraph :: String -> String
 capitalizeParagraph p = unwords $ map capitalizeWord $ words p
 
-
--- data Digit = One |
---              Two |
---              Three |
---              Four |
---              Five |
---              Six |
---              Seven |
---              Eight |
---              Nine |
---              Zero |
---              Star |
---              Pound 
---              deriving (Show, Eq)
-
 type PhoneDigit = Char
 type PhoneChar = Char
 
