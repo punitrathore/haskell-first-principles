@@ -136,10 +136,14 @@ instance Functor List where
   fmap f (Cons a l) = Cons (f a) (fmap f l)
 
 instance Applicative List where
-  pure a = pure a
+  pure a = Cons a Nil
   (<*>) _ Nil = Nil
   (<*>) Nil _ = Nil
   (<*>) c1@(Cons f fl) c2 = append (fmap f c2) (fl <*> c2)
+
+
+instance (Arbitrary a) => Arbitrary (List a) where
+  arbitrary = Cons <$> arbitrary <*> arbitrary
 
 newtype ZipList' a = ZipList' (List a)
                    deriving (Eq, Show)
@@ -154,9 +158,22 @@ instance Eq a => EqProp (ZipList' a) where
 instance Functor ZipList' where
   fmap f (ZipList' xs) = ZipList' $ fmap f xs
 
+instance (Arbitrary a) => Arbitrary (ZipList' a) where
+  arbitrary = ZipList' <$> arbitrary
+
+repeatList :: a -> (List a)
+repeatList x = xs
+  where xs = Cons x xs
+
+zipListWith :: (a -> b -> c) -> (List a) -> (List b) -> (List c)
+zipListWith _ Nil _ = Nil
+zipListWith _ _ Nil = Nil
+zipListWith f (Cons a as) (Cons b bs) = Cons (f a b) (zipListWith f as bs)
+
 instance Applicative ZipList' where
-  pure = pure
-  (<*>) l1@(ZipList' fs) l2@(ZipList' vs) = ZipList' (fs <*> vs)
+  pure x = ZipList' (repeatList x)
+  ZipList' fs <*> ZipList' xs = ZipList' (zipListWith id fs xs)
+
 
 -- testZipList' = do
 --   quickBatch $ applicative[(ZipList' Nil,"2","3")]
