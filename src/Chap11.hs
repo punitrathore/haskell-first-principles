@@ -1,4 +1,4 @@
-module ChapEleven where
+module Chap11 where
 
 import Data.Char
 import Data.List

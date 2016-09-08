@@ -1,4 +1,4 @@
-module ChapThirteen where
+module Chap13 where
 
 import Control.Monad
 import System.Exit (exitSuccess)
